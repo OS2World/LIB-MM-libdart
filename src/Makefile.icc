@@ -1,0 +1,31 @@
+# Makefile for ICC/NMAKE
+.PHONY : all
+
+.SUFFIXES : .exe .lib .obj .c .h
+
+CC = icc
+CFLAGS = /W3 /Ss /Gm /q
+
+RM = del
+
+.c.obj :
+    $(CC) $(CFLAGS) /c /Fo$@ $<
+
+all : dart.lib darttest.exe
+
+dart.lib : dart.obj
+    -$(RM) $@
+    ilib /nobackup /nologo $@ $**,,
+
+dart.obj : dart.c dart.h
+
+darttest.exe : darttest.obj dart.lib
+    $(CC) /Fe$@ $** mmpm2.lib
+
+darttest.obj : darttest.c dart.h
+
+clean :
+    -$(RM) *.bak
+    -$(RM) *.obj
+    -$(RM) *.lib
+    -$(RM) *.exe
